@@ -18,8 +18,6 @@ import {
   Link as LinkIcon,
   AlertTriangle,
   Trash2,
-  CheckCircle,
-  XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -42,11 +40,26 @@ export default function NodeConfigPanel({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [emailInputRaw, setEmailInputRaw] = useState<string>("");
-  const [localNodeData, setLocalNodeData] = useState<any>(node.data);
+  const [localNodeData, setLocalNodeData] = useState<
+    ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData
+  >(node.data as ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData);
 
   useEffect(() => {
-    setLocalNodeData(node.data);
-  }, [node.data]);
+    // Use a switch to handle each node type specifically
+    switch (node.type) {
+      case "coldEmail":
+        setLocalNodeData(node.data as ColdEmailNodeData);
+        break;
+      case "delay":
+        setLocalNodeData(node.data as WaitDelayNodeData);
+        break;
+      case "leadSource":
+        setLocalNodeData(node.data as LeadSourceNodeData);
+        break;
+      default:
+        console.error("Unknown node type:", node.type);
+    }
+  }, [node.data, node.type]);
 
   const toInputRef = useRef<HTMLInputElement>(null);
   const subjectInputRef = useRef<HTMLInputElement>(null);
@@ -68,75 +81,33 @@ export default function NodeConfigPanel({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    e.stopPropagation(); 
-
+    e.stopPropagation();
     const { name, value } = e.target;
 
-  
-    setLocalNodeData(
-      (prev: ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData) => ({
-        ...prev,
+    // Use a type-safe approach with node.type
+    if (node.type === "coldEmail") {
+      setLocalNodeData((prev) => ({
+        ...(prev as ColdEmailNodeData),
         [name]: value,
-      })
-    );
+      }));
+    } else if (node.type === "delay") {
+      setLocalNodeData((prev) => ({
+        ...(prev as WaitDelayNodeData),
+        [name]: value,
+      }));
+    } else if (node.type === "leadSource") {
+      setLocalNodeData((prev) => ({
+        ...(prev as LeadSourceNodeData),
+        [name]: value,
+      }));
+    }
 
-   
     onUpdate(node.id, { [name]: value });
-
     setValidationErrors([]);
   };
- 
-  const handleToEmailChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.stopPropagation();
 
-    const emailsText = e.target.value;
-    const emails = emailsText
-      .split(",")
-      .map((email) => email.trim())
-      .filter(Boolean);
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const invalidEmails = emails.filter((email) => !emailRegex.test(email));
-
-    if (invalidEmails.length > 0) {
-      setValidationErrors(
-        invalidEmails
-          .slice(0, 3)
-          .map((email) => `Invalid email format: ${email}`)
-      );
-      if (invalidEmails.length > 3) {
-        setValidationErrors((prev) => [
-          ...prev,
-          `...and ${invalidEmails.length - 3} more invalid emails`,
-        ]);
-      }
-    } else {
-      setValidationErrors([]);
-    }
-
-    if (emails.length > 50) {
-      setValidationErrors((prev) => [
-        ...prev,
-        "Maximum 50 email addresses allowed",
-      ]);
-      emails.splice(50); 
-    }
-
-    setLocalNodeData(
-      (prev: ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData) => ({
-        ...prev,
-        to: emails.join(", "),
-        recipientList: emails,
-      })
-    );
-
-    onUpdate(node.id, {
-      to: emails.join(", "),
-      recipientList: emails,
-    });
-  };
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
 
     const { name, value } = e.target;
     const numValue = parseInt(value) || 0;
@@ -149,19 +120,6 @@ export default function NodeConfigPanel({
     );
 
     onUpdate(node.id, { [name]: numValue });
-  };
-
-  const validateEmails = (emails: string[]): string[] => {
-    const errors: string[] = [];
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    emails.forEach((email, index) => {
-      if (!emailRegex.test(email)) {
-        errors.push(`Invalid email format: ${email}`);
-      }
-    });
-
-    return errors;
   };
 
   const handleEmailListChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -189,15 +147,13 @@ export default function NodeConfigPanel({
       }
     }
 
-  
     if (emails.length > 100) {
       errors.push("Maximum 100 email addresses allowed");
-      emails.splice(100); 
+      emails.splice(100);
     }
 
     setValidationErrors(errors);
 
-  
     setLocalNodeData(
       (prev: ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData) => ({
         ...prev,
@@ -205,7 +161,6 @@ export default function NodeConfigPanel({
       })
     );
 
-   
     onUpdate(node.id, {
       emailList: emails.filter((email) => emailRegex.test(email)),
     });
@@ -214,7 +169,6 @@ export default function NodeConfigPanel({
     if (node.type === "coldEmail") {
       const data = node.data as ColdEmailNodeData;
 
-      
       if (data.to && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.to)) {
         toast.warning("Invalid email address format");
         return;
@@ -223,7 +177,6 @@ export default function NodeConfigPanel({
       if (data.to && data.subject && data.body) {
         setIsSubmitting(true);
         try {
-        
           const date = new Date();
           date.setHours(date.getHours() + 1);
 
@@ -246,8 +199,6 @@ export default function NodeConfigPanel({
       }
     }
   };
-
- 
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -273,7 +224,7 @@ export default function NodeConfigPanel({
         );
 
         if (emailColumnIndex === -1) {
-          toast.warning('CSV file must contain an "email" column');
+          toast.warning('CSV file must contain an &quot;email&quot; column');
           return;
         }
 
@@ -290,7 +241,7 @@ export default function NodeConfigPanel({
 
         if (emails.length === 0) {
           toast.warning("No valid email addresses found in the CSV file");
-        return;
+          return;
         }
 
         onUpdate(node.id, { emailList: emails });
@@ -333,11 +284,11 @@ export default function NodeConfigPanel({
   return (
     <div
       className="fixed inset-0 bg-indigo-900/20 backdrop-blur-sm flex items-center justify-center z-50"
-      onClick={(e) => e.stopPropagation()} 
+      onClick={(e) => e.stopPropagation()}
     >
       <div
         className="bg-white rounded-xl shadow-xl overflow-hidden border border-indigo-100 max-w-md w-full transform transition-all"
-        onClick={(e) => e.stopPropagation()} 
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 border-b border-indigo-100 flex justify-between items-center bg-indigo-50/80">
           <div className="flex items-center">
@@ -377,7 +328,7 @@ export default function NodeConfigPanel({
                       type="email"
                       id="to"
                       name="to"
-                      value={localNodeData.to || ""}
+                      value={(localNodeData as ColdEmailNodeData).to || ""}
                       onChange={handleChange}
                       className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
                       placeholder="For testing: recipient@example.com"
@@ -402,7 +353,7 @@ export default function NodeConfigPanel({
                     type="text"
                     id="subject"
                     name="subject"
-                    value={localNodeData.subject || ""}
+                    value={(localNodeData as ColdEmailNodeData).subject || ""}
                     onChange={handleChange}
                     className="w-full px-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
                     placeholder="Email Subject"
@@ -420,7 +371,7 @@ export default function NodeConfigPanel({
                   <textarea
                     id="emailBody"
                     name="body"
-                    value={localNodeData.body || ""}
+                    value={(localNodeData as ColdEmailNodeData).body || ""}
                     onChange={handleChange}
                     className="w-full px-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 h-32 text-indigo-900"
                     placeholder="Type your email message here..."
@@ -450,7 +401,6 @@ export default function NodeConfigPanel({
               </>
             )}
 
-           
             {node.type === "delay" && (
               <>
                 <div>
@@ -469,7 +419,9 @@ export default function NodeConfigPanel({
                       type="number"
                       id="delayHours"
                       name="delayHours"
-                      value={localNodeData.delayHours || 0}
+                      value={
+                        (localNodeData as WaitDelayNodeData).delayHours || 0
+                      }
                       onChange={handleNumberChange}
                       className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
                       min="0"
@@ -492,7 +444,9 @@ export default function NodeConfigPanel({
                       type="number"
                       id="delayMinutes"
                       name="delayMinutes"
-                      value={localNodeData.delayMinutes || 0}
+                      value={
+                        (localNodeData as WaitDelayNodeData).delayMinutes || 0
+                      }
                       onChange={handleNumberChange}
                       className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
                       min="0"
@@ -552,7 +506,10 @@ export default function NodeConfigPanel({
                     <select
                       id="sourceType"
                       name="source"
-                      value={localNodeData.source || "Manual Input"}
+                      value={
+                        (localNodeData as LeadSourceNodeData).source ||
+                        "Manual Input"
+                      }
                       onChange={handleChange}
                       onClick={(e) => e.stopPropagation()}
                       className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 appearance-none text-indigo-900"
@@ -564,7 +521,8 @@ export default function NodeConfigPanel({
                   </div>
                 </div>
 
-                {localNodeData.source === "Manual Input" && (
+                {(localNodeData as LeadSourceNodeData).source ===
+                  "Manual Input" && (
                   <div>
                     <label
                       className="block text-indigo-900 text-sm font-medium mb-2"
@@ -579,7 +537,7 @@ export default function NodeConfigPanel({
                       ref={emailListRef}
                       id="emailList"
                       name="emailListRaw"
-                      value={emailInputRaw} 
+                      value={emailInputRaw}
                       onChange={handleEmailListChange}
                       onClick={(e) => e.stopPropagation()}
                       className={`text-indigo-900 w-full px-3 py-3 border-2 ${
@@ -609,8 +567,11 @@ export default function NodeConfigPanel({
                       </div>
                     )}
 
-                    {Array.isArray(localNodeData.emailList) &&
-                      localNodeData.emailList.length > 0 &&
+                    {Array.isArray(
+                      (localNodeData as LeadSourceNodeData).emailList
+                    ) &&
+                      (localNodeData as LeadSourceNodeData).emailList.length >
+                        0 &&
                       validationErrors.length === 0 && (
                         <div className="mt-2 text-sm text-green-600 flex items-center">
                           <svg
@@ -628,8 +589,13 @@ export default function NodeConfigPanel({
                             ></path>
                           </svg>
                           <span>
-                            {localNodeData.emailList.length} valid email
-                            {localNodeData.emailList.length !== 1
+                            {
+                              (localNodeData as LeadSourceNodeData).emailList
+                                .length
+                            }{" "}
+                            valid email
+                            {(localNodeData as LeadSourceNodeData).emailList
+                              .length !== 1
                               ? "s"
                               : ""}{" "}
                             added
@@ -639,14 +605,15 @@ export default function NodeConfigPanel({
                   </div>
                 )}
 
-                {localNodeData.source === "CSV Import" && (
+                {(localNodeData as LeadSourceNodeData).source ===
+                  "CSV Import" && (
                   <div>
                     <label className="block text-indigo-900 text-sm font-medium mb-2">
                       Upload CSV File
                     </label>
                     <div className="border-2 border-dashed border-indigo-200 rounded-lg p-4 text-center bg-indigo-50/30">
                       <p className="text-indigo-700 mb-2">
-                        CSV must include an "email" column
+                        CSV must include an &quot;email&quot; column
                       </p>
                       <label
                         className="cursor-pointer bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium py-2 px-4 rounded-lg transition-colors inline-flex items-center"
@@ -663,24 +630,34 @@ export default function NodeConfigPanel({
                         />
                       </label>
 
-                      {Array.isArray(localNodeData.emailList) &&
-                        localNodeData.emailList.length > 0 && (
+                      {Array.isArray(
+                        (localNodeData as LeadSourceNodeData).emailList
+                      ) &&
+                        (localNodeData as LeadSourceNodeData).emailList.length >
+                          0 && (
                           <div className="mt-3 text-left bg-white p-2 rounded-lg border border-indigo-100">
                             <div className="text-sm font-medium text-indigo-900 mb-1 flex items-center">
                               <Database className="h-4 w-4 mr-1" />
-                              Imported Emails: {localNodeData.emailList.length}
+                              Imported Emails:{" "}
+                              {
+                                (localNodeData as LeadSourceNodeData).emailList
+                                  .length
+                              }
                             </div>
                             <div className="max-h-16 overflow-y-auto text-xs text-indigo-700">
-                              {localNodeData.emailList
+                              {(localNodeData as LeadSourceNodeData).emailList
                                 .slice(0, 5)
                                 .map((email: string, idx: number) => (
                                   <div key={idx} className="truncate">
                                     {email}
                                   </div>
                                 ))}
-                              {localNodeData.emailList.length > 5 && (
+                              {(localNodeData as LeadSourceNodeData).emailList
+                                .length > 5 && (
                                 <div className="text-indigo-400">
-                                  ...and {localNodeData.emailList.length - 5}{" "}
+                                  ...and{" "}
+                                  {(localNodeData as LeadSourceNodeData)
+                                    .emailList.length - 5}{" "}
                                   more
                                 </div>
                               )}
@@ -690,7 +667,8 @@ export default function NodeConfigPanel({
                     </div>
                   </div>
                 )}
-                {localNodeData.source === "API Integration" && (
+                {(localNodeData as LeadSourceNodeData).source ===
+                  "API Integration" && (
                   <div className="space-y-4">
                     <div>
                       <label className="block text-indigo-900 text-sm font-medium mb-2">
@@ -703,7 +681,10 @@ export default function NodeConfigPanel({
                         <input
                           type="url"
                           name="apiEndpoint"
-                          value={localNodeData.apiEndpoint || ""}
+                          value={
+                            (localNodeData as LeadSourceNodeData).apiEndpoint ||
+                            ""
+                          }
                           onChange={handleChange}
                           onClick={(e) => e.stopPropagation()}
                           placeholder="https://api.example.com/leads"
@@ -718,7 +699,9 @@ export default function NodeConfigPanel({
                       <input
                         type="password"
                         name="apiKey"
-                        value={localNodeData.apiKey || ""}
+                        value={
+                          (localNodeData as LeadSourceNodeData).apiKey || ""
+                        }
                         onChange={handleChange}
                         onClick={(e) => e.stopPropagation()}
                         placeholder="Enter API key"

@@ -13,9 +13,11 @@ export interface FlowchartData {
 
 export interface NodeData {
   label: string;
+  nodeType: 'coldEmail' | 'delay' | 'leadSource'; 
 }
 
 export interface ColdEmailNodeData extends NodeData {
+  nodeType: 'coldEmail'
   to?: string;
   recipientList?: string[];
   subject?: string;
@@ -23,13 +25,17 @@ export interface ColdEmailNodeData extends NodeData {
 }
 
 export interface WaitDelayNodeData extends NodeData {
+  nodeType: 'delay'
   delayHours: number;
   delayMinutes: number;
 }
 
 export interface LeadSourceNodeData extends NodeData {
+  nodeType: 'leadSource'
   source: string;
   emailList: string[];
+  apiKey?:string;
+  apiEndpoint?: string;
 }
 
 export interface EmailData {
@@ -41,7 +47,7 @@ export interface EmailData {
 
 export interface ApiResponse<T> {
   message: string;
-  [key: string]: unknown;
+  [key: string]: unknown | T;
 }
 
 export type FlowchartResponse = ApiResponse<{

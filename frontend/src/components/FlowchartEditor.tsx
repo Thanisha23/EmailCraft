@@ -41,7 +41,6 @@ import {
   Users,
   Save,
   Loader,
-  List,
   X,
   PlusCircle,
   Eye,
@@ -67,7 +66,6 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
   const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showSavedFlowcharts, setShowSavedFlowcharts] = useState(false);
-
 
   useEffect(() => {
     if (flowchartId) {
@@ -160,11 +158,9 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
 
   const addNode = (type: string) => {
     let nodeType = "default";
-    let initialData:
-      | NodeData
-      | ColdEmailNodeData
-      | WaitDelayNodeData
-      | LeadSourceNodeData = {
+    let initialData: NodeData = {
+      //
+      nodeType: "coldEmail",
       label: type,
     };
 
@@ -172,7 +168,8 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
       case "Cold Email":
         nodeType = "coldEmail";
         initialData = {
-          ...initialData,
+          label: type,
+          nodeType: 'coldEmail', 
           subject: "",
           body: "",
           to: "",
@@ -181,7 +178,8 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
       case "Wait/Delay":
         nodeType = "delay";
         initialData = {
-          ...initialData,
+          label: type, 
+          nodeType: 'delay', 
           delayHours: 1,
           delayMinutes: 0,
         } as WaitDelayNodeData;
@@ -189,7 +187,8 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
       case "Lead Source":
         nodeType = "leadSource";
         initialData = {
-          ...initialData,
+          label: type,
+          nodeType: 'leadSource', 
           source: "Manual Input",
           emailList: [],
         } as LeadSourceNodeData;
@@ -247,7 +246,6 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
     }, 3000);
   }, []);
 
-
   const handleSaveFlowchart = async () => {
     setIsSaving(true);
     try {
@@ -259,7 +257,6 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
 
       let savedFlowchartId = flowchartId;
 
-    
       if (flowchartId) {
         await updateFlowchart(flowchartId, flowchartData);
       } else {
@@ -302,7 +299,9 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
           try {
             await processFlowchart(savedFlowchartId);
 
-          toast.success("Emails have been scheduled based on your flowchart!")
+            toast.success(
+              "Emails have been scheduled based on your flowchart!"
+            );
           } catch (error) {
             console.error("Error processing flowchart for emails:", error);
             toast.error("Failed to process flowchart for emails");
@@ -454,11 +453,11 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
                   case "coldEmail":
                     return "#4f46e5";
                   case "delay":
-                    return "#7c3aed"; 
+                    return "#7c3aed";
                   case "leadSource":
-                    return "#2563eb"; 
+                    return "#2563eb";
                   default:
-                    return "#6366f1"; 
+                    return "#6366f1";
                 }
               }}
             />
