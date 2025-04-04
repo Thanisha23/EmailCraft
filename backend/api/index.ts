@@ -8,7 +8,7 @@ const app = express()
 
 app.use(cors(
     {
-        origin: env.FRONTEND_URL,
+        origin: ['https://emailcraft.thanisha.tech', 'http://localhost:3000'],
         credentials: true,
     }
 ))

@@ -72,9 +72,17 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: "1d",
     });
 
-    res.cookie("token", token, { httpOnly: true }).json({
-      message: "Logged in successfully",
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        domain: ".thanisha.tech",
+        sameSite: "lax",
+        path: "/",
+        secure: true,
+      })
+      .json({
+        message: "Logged in successfully",
+      });
     ReadableStreamDefaultController;
   } catch (error) {
     res.status(500).json({
