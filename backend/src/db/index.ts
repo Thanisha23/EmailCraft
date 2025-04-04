@@ -1,40 +1,28 @@
 import mongoose from "mongoose";
-import env from "../utils/validateEnv";
 
-const connectionOptions: mongoose.ConnectOptions = {
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  retryWrites: true,
-  w: "majority" as const,
-};
-
-const connectToDatabase = async () => {
+const connectDB = async () => {
   try {
-    await mongoose.connect(env.DATABASE_URL, connectionOptions);
-    console.log("Mongoose connected to database");
-  } catch (error) {
-    console.error("MongoDB initial connection error:", error);
+    const mongoURI = process.env.DATABASE_URL;
+    if (!mongoURI) {
+      throw new Error("MongoURI environment variable is not defined");
+    }
+
+    const connection = await mongoose.connect(mongoURI);
+    console.log(`MongoDB connected: ${connection.connection.host}`);
+  } catch (error: Error | any) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    console.error(`Error connecting to MongoDB: ${errorMessage}`);
+    console.error(
+      error instanceof Error ? error.stack : "No stack trace available"
+    );
+    process.exit(1);
   }
 };
 
-mongoose.connection.on("connected", () => {
-  console.log("Mongoose connection established");
-});
+export default connectDB;
 
-mongoose.connection.on("error", (err) => {
-  console.error("Mongoose connection error:", err);
-});
 
-mongoose.connection.on("disconnected", () => {
-  console.log("Mongoose disconnected");
-});
 
-process.on("SIGINT", async () => {
-  await mongoose.connection.close();
-  console.log("Mongoose connection closed due to application termination");
-  process.exit(0);
-});
 
-connectToDatabase();
 
-export default mongoose;

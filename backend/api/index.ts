@@ -3,7 +3,8 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import env from "../src/utils/validateEnv"
 import rootRouter from "../src/routes"
-import "../src/db"
+// import "../src/db"
+import connectDB from "../src/db"
 const app = express()
 
 app.use(cors(
@@ -23,6 +24,13 @@ app.get("/",(req:Request,res: Response) => {
 
 app.use("/api/v1",rootRouter)
 
-app.listen(env.PORT,() => {
-    console.log("The application is running on port http://localhost: "+ env.PORT)
-})
+const startServer = async () => {
+    await connectDB();
+  
+    const PORT = env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server running on port: ${PORT} `);
+    });
+  };
+  
+  startServer();
