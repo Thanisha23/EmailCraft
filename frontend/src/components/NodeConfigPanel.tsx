@@ -45,7 +45,7 @@ export default function NodeConfigPanel({
   >(node.data as ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData);
 
   useEffect(() => {
-    // Use a switch to handle each node type specifically
+   
     switch (node.type) {
       case "coldEmail":
         setLocalNodeData(node.data as ColdEmailNodeData);
@@ -84,7 +84,6 @@ export default function NodeConfigPanel({
     e.stopPropagation();
     const { name, value } = e.target;
 
-    // Use a type-safe approach with node.type
     if (node.type === "coldEmail") {
       setLocalNodeData((prev) => ({
         ...(prev as ColdEmailNodeData),

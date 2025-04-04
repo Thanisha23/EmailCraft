@@ -159,7 +159,6 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
   const addNode = (type: string) => {
     let nodeType = "default";
     let initialData: NodeData = {
-      //
       nodeType: "coldEmail",
       label: type,
     };
@@ -169,7 +168,7 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
         nodeType = "coldEmail";
         initialData = {
           label: type,
-          nodeType: 'coldEmail', 
+          nodeType: "coldEmail",
           subject: "",
           body: "",
           to: "",
@@ -178,8 +177,8 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
       case "Wait/Delay":
         nodeType = "delay";
         initialData = {
-          label: type, 
-          nodeType: 'delay', 
+          label: type,
+          nodeType: "delay",
           delayHours: 1,
           delayMinutes: 0,
         } as WaitDelayNodeData;
@@ -188,7 +187,7 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
         nodeType = "leadSource";
         initialData = {
           label: type,
-          nodeType: 'leadSource', 
+          nodeType: "leadSource",
           source: "Manual Input",
           emailList: [],
         } as LeadSourceNodeData;
