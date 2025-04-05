@@ -15,7 +15,6 @@ import {
   Send,
   Save,
   Upload,
-  Link as LinkIcon,
   AlertTriangle,
   Trash2,
 } from "lucide-react";
