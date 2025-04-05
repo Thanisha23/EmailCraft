@@ -132,7 +132,7 @@ export default function Register() {
                 />
                  <button 
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 hover:text-indigo-600 focus:outline-none"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 hover:text-indigo-600 focus:outline-none cursor-pointer"
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   tabIndex={-1}
@@ -161,7 +161,7 @@ export default function Register() {
                 />
                 <button 
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 hover:text-indigo-600 focus:outline-none"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 hover:text-indigo-600 focus:outline-none cursor-pointer"
                   onClick={toggleConfirmPasswordVisibility}
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                   tabIndex={-1}
@@ -174,7 +174,7 @@ export default function Register() {
             <div className="pt-2">
               <button
                 className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-                  isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                  isLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
                 }`}
                 type="submit"
                 disabled={isLoading}

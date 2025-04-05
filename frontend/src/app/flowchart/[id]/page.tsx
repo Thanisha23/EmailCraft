@@ -31,7 +31,7 @@ export default function FlowchartPage() {
           </Link>
           <button
             onClick={logout}
-            className="flex items-center text-red-600 hover:text-red-800 transition-colors px-3 py-2 rounded-lg hover:bg-red-50"
+            className="flex items-center text-red-600 cursor-pointer hover:text-red-800 transition-colors px-3 py-2 rounded-lg hover:bg-red-50"
           >
             <LogOut className="h-4 w-4 mr-2" />
             Logout

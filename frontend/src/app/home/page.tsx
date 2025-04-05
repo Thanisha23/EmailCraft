@@ -52,7 +52,7 @@ export default function Home() {
                 Your Email Flowcharts
               </h2>
               <button
-                className="flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm"
+                className="flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm cursor-pointer"
                 onClick={handleCreateNew}
               >
                 <PlusCircle className="h-5 w-5" />
@@ -79,7 +79,7 @@ export default function Home() {
                   Create your first email flowchart to get started
                 </p>
                 <button
-                  className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm flex items-center mx-auto"
+                  className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm flex items-center mx-auto cursor-pointer"
                   onClick={handleCreateNew}
                 >
                   <PlusCircle className="h-5 w-5 mr-2" />

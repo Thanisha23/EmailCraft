@@ -19,6 +19,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const publicRoutes = ["/", "/login", "/register"];
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,16 +35,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (
           !isAuth &&
-          pathname !== "/login" &&
-          pathname !== "/register" &&
+          !publicRoutes.includes(pathname) &&
           !pathname.startsWith("/_next")
         ) {
+          toast.info("Please log in to access this page");
           router.push("/login");
         }
       } catch (error) {
         console.error("Auth verification error:", error);
         setIsAuthenticated(false);
-        toast.error("Authentication verification failed. Please log in again.");
+
+        if (!publicRoutes.includes(pathname)) {
+          toast.error(
+            "Authentication verification failed. Please log in again."
+          );
+          router.push("/login");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -56,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await logout();
       setIsAuthenticated(false);
+      toast.success("Successfully logged out");
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);

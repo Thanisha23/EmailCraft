@@ -374,7 +374,7 @@ const handleSaveFlowchart = async () => {
               {["Cold Email", "Wait/Delay", "Lead Source"].map((type) => (
                 <button
                   key={type}
-                  className="flex-shrink-0 flex items-center px-3 py-2 mx-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 text-sm whitespace-nowrap"
+                  className="flex-shrink-0 flex items-center px-3 py-2 mx-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 text-sm whitespace-nowrap cursor-pointer"
                   onClick={() => addNode(type)}
                 >
                   {getNodeTypeIcon(type)}
@@ -386,7 +386,7 @@ const handleSaveFlowchart = async () => {
 
           <div className="flex space-x-2 md:flex-shrink-0 pt-2">
             <button
-              className="flex items-center px-3 py-2 border-2 border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 whitespace-nowrap"
+              className="flex items-center px-3 py-2 border-2 border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 whitespace-nowrap cursor-pointer"
               onClick={toggleSavedFlowcharts}
             >
               {showSavedFlowcharts ? (
@@ -398,8 +398,8 @@ const handleSaveFlowchart = async () => {
             </button>
 
             <button
-              className={`flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 whitespace-nowrap ${
-                isSaving ? "opacity-70 cursor-not-allowed" : ""
+              className={`flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg  hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 whitespace-nowrap ${
+                isSaving ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
               }`}
               onClick={handleSaveFlowchart}
               disabled={isSaving}
@@ -428,7 +428,7 @@ const handleSaveFlowchart = async () => {
                 </h2>
                 <button
                   onClick={() => setShowSavedFlowcharts(false)}
-                  className="text-indigo-500 hover:text-indigo-700 transition-colors"
+                  className="text-indigo-500 cursor-pointer hover:text-indigo-700 transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -499,7 +499,7 @@ const handleSaveFlowchart = async () => {
                 </h2>
                 <button
                   onClick={closeNodeConfig}
-                  className="text-indigo-500 hover:text-indigo-700 transition-colors"
+                  className="text-indigo-500 hover:text-indigo-700 transition-colors cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>

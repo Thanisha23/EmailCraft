@@ -47,7 +47,7 @@ export default function FlowchartsList({ onSelect }: FlowchartsListProps) {
         <div className="flex justify-end gap-3">
           <button 
             onClick={() => toast.dismiss(t)}
-            className="px-4 py-2 border-2 border-indigo-200 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors"
+            className="px-4 py-2 border-2 border-indigo-200 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -65,7 +65,7 @@ export default function FlowchartsList({ onSelect }: FlowchartsListProps) {
                 }
               );
             }}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors cursor-pointer"
           >
             Delete
           </button>
@@ -115,7 +115,7 @@ export default function FlowchartsList({ onSelect }: FlowchartsListProps) {
         <p className="text-indigo-700 mb-6">Create your first email flowchart to get started</p>
         <button
           onClick={() => onSelect()}
-          className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm flex items-center mx-auto"
+          className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm flex items-center mx-auto cursor-pointer"
         >
           <Plus className="h-5 w-5 mr-2" />
           Create Your First Flowchart
@@ -155,7 +155,7 @@ export default function FlowchartsList({ onSelect }: FlowchartsListProps) {
             <div className="flex gap-2">
               <button
                 onClick={(e) => flowchart._id && handleDelete(flowchart._id, e)}
-                className="p-2 text-red-500 hover:bg-red-50 hover:text-red-700 rounded-full transition-colors"
+                className="p-2 text-red-500 hover:bg-red-50 hover:text-red-700 rounded-full transition-colors cursor-pointer"
                 title="Delete flowchart"
               >
                 <Trash2 className="h-5 w-5" />

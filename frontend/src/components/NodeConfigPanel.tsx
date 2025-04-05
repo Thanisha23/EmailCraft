@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Node } from "reactflow";
-import { scheduleEmail } from "@/service/api";
+// import { scheduleEmail } from "@/service/api";
 import {
   ColdEmailNodeData,
   WaitDelayNodeData,
@@ -12,7 +12,6 @@ import {
   Mail,
   Clock,
   Database,
-  Send,
   Save,
   Upload,
   AlertTriangle,
@@ -36,7 +35,7 @@ export default function NodeConfigPanel({
   onClose,
   onDelete,
 }: NodeConfigPanelProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [emailInputRaw, setEmailInputRaw] = useState<string>("");
   const [localNodeData, setLocalNodeData] = useState<
@@ -168,37 +167,37 @@ export default function NodeConfigPanel({
       emailList: emails.filter((email) => emailRegex.test(email)),
     });
   };
-  const handleScheduleEmail = async () => {
-    if (node.type === "coldEmail") {
-      const data = node.data as ColdEmailNodeData;
+  // const handleScheduleEmail = async () => {
+  //   if (node.type === "coldEmail") {
+  //     const data = node.data as ColdEmailNodeData;
 
      
 
-      if (data.subject && data.body) {
-        setIsSubmitting(true);
-        try {
-          const date = new Date();
-          date.setHours(date.getHours() + 1);
+  //     if (data.subject && data.body) {
+  //       setIsSubmitting(true);
+  //       try {
+  //         const date = new Date();
+  //         date.setHours(date.getHours() + 1);
 
-          await scheduleEmail({
-            to: "test@example.com",
-            subject: data.subject,
-            body: data.body || "",
-            date: date.toISOString(),
-          });
+  //         await scheduleEmail({
+  //           to: "test@example.com",
+  //           subject: data.subject,
+  //           body: data.body || "",
+  //           date: date.toISOString(),
+  //         });
 
-          toast.success("Email scheduled successfully!");
-        } catch (error) {
-          console.error("Failed to schedule email:", error);
-          toast.error("Failed to schedule email");
-        } finally {
-          setIsSubmitting(false);
-        }
-      } else {
-        toast.warning("Please fill in all required fields");
-      }
-    }
-  };
+  //         toast.success("Email scheduled successfully!");
+  //       } catch (error) {
+  //         console.error("Failed to schedule email:", error);
+  //         toast.error("Failed to schedule email");
+  //       } finally {
+  //         setIsSubmitting(false);
+  //       }
+  //     } else {
+  //       toast.warning("Please fill in all required fields");
+  //     }
+  //   }
+  // };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -302,7 +301,7 @@ export default function NodeConfigPanel({
               e.stopPropagation();
               onClose();
             }}
-            className="text-indigo-400 hover:text-indigo-600 transition-colors p-1 rounded-full hover:bg-indigo-100"
+            className="text-indigo-400 cursor-pointer hover:text-indigo-600 transition-colors p-1 rounded-full hover:bg-indigo-100"
           >
             <X className="h-5 w-5" />
           </button>
@@ -352,10 +351,10 @@ export default function NodeConfigPanel({
                   />
                 </div>
 
-                <button
+                {/* <button
                   onClick={handleScheduleEmail}
                   disabled={isSubmitting}
-                  className={`w-full flex justify-center items-center px-4 py-3 mt-2 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
+                  className={`w-full flex justify-center items-center cursor-pointer px-4 py-3 mt-2 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
                     isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                   }`}
                 >
@@ -370,7 +369,7 @@ export default function NodeConfigPanel({
                       Test: Schedule This Email
                     </>
                   )}
-                </button>
+                </button> */}
               </>
             )}
 
@@ -649,7 +648,7 @@ export default function NodeConfigPanel({
                 e.stopPropagation();
                 onClose();
               }}
-              className="w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+              className="w-full flex justify-center cursor-pointer items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
             >
               <Save className="h-4 w-4 mr-2" />
               Save Configuration
@@ -658,7 +657,7 @@ export default function NodeConfigPanel({
           <div className="p-4 border-t border-indigo-100">
             <button
               onClick={() => onDelete(node.id)}
-              className="w-full flex justify-center items-center px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+              className="w-full flex justify-center items-center cursor-pointer px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete Node

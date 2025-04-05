@@ -56,7 +56,7 @@ const Navbar = () => {
           
           <button
             onClick={logout}
-            className="flex items-center px-4 py-2 bg-white border border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 ml-4"
+            className="flex items-center px-4 py-2 cursor-pointer bg-white border border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 ml-4"
           >
             <LogOut className="h-4 w-4 mr-2" />
             Logout
@@ -67,7 +67,7 @@ const Navbar = () => {
         <div className="flex md:hidden items-center space-x-4">
           <button
             onClick={logout}
-            className="flex items-center px-3 py-1.5 bg-white border border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+            className="flex items-center px-3 py-1.5 bg-white cursor-pointer border border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
             aria-label="Logout"
           >
             <LogOut className="h-4 w-4" />
@@ -76,7 +76,7 @@ const Navbar = () => {
           
           <button
             onClick={toggleMenu}
-            className="p-2 text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="p-2 text-indigo-700 hover:text-indigo-900 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
