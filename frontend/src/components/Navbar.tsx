@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { LogOut, Mail, LayoutDashboard, Settings, Menu, X } from "lucide-react";
+import { LogOut, Mail, LayoutDashboard, Menu, X } from "lucide-react";
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

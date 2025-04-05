@@ -2,7 +2,6 @@
 
 import React from "react";
 import FlowchartEditor from "@/components/FlowchartEditor";
-import { useAuth } from "@/context/AuthContext";
 
 export default function NewFlowchartPage() {
 
