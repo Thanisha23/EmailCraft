@@ -489,7 +489,6 @@ export default function NodeConfigPanel({
                     >
                       <option value="Manual Input">Manual Input</option>
                       <option value="CSV Import">CSV Import</option>
-                      <option value="API Integration">API Integration</option>
                     </select>
                   </div>
                 </div>
@@ -640,65 +639,7 @@ export default function NodeConfigPanel({
                     </div>
                   </div>
                 )}
-                {(localNodeData as LeadSourceNodeData).source ===
-                  "API Integration" && (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-indigo-900 text-sm font-medium mb-2">
-                        API Endpoint
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <LinkIcon className="h-4 w-4 text-indigo-400" />
-                        </div>
-                        <input
-                          type="url"
-                          name="apiEndpoint"
-                          value={
-                            (localNodeData as LeadSourceNodeData).apiEndpoint ||
-                            ""
-                          }
-                          onChange={handleChange}
-                          onClick={(e) => e.stopPropagation()}
-                          placeholder="https://api.example.com/leads"
-                          className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-indigo-900 text-sm font-medium mb-2">
-                        API Key (optional)
-                      </label>
-                      <input
-                        type="password"
-                        name="apiKey"
-                        value={
-                          (localNodeData as LeadSourceNodeData).apiKey || ""
-                        }
-                        onChange={handleChange}
-                        onClick={(e) => e.stopPropagation()}
-                        placeholder="Enter API key"
-                        className="w-full px-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
-                      />
-                    </div>
-                    <div className="pt-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toast.warning("API connection feature coming soon");
-                        }}
-                        className="w-full flex justify-center items-center px-4 py-2 border border-indigo-300 rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
-                      >
-                        <Send className="h-4 w-4 mr-2" />
-                        Test API Connection
-                      </button>
-                      <p className="text-xs text-indigo-500 mt-2 text-center">
-                        Note: This feature requires backend implementation
-                      </p>
-                    </div>
-                  </div>
-                )}
+            
               </>
             )}
           </div>

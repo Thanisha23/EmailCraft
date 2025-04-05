@@ -34,8 +34,6 @@ export interface LeadSourceNodeData extends NodeData {
   nodeType: 'leadSource'
   source: string;
   emailList: string[];
-  apiKey?:string;
-  apiEndpoint?: string;
 }
 
 export interface EmailData {
