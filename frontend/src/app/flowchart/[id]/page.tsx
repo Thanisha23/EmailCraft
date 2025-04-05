@@ -1,13 +1,16 @@
 "use client";
 
+import React from "react";
 import { useParams } from "next/navigation";
 import FlowchartEditor from "@/components/FlowchartEditor";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function FlowchartPage() {
   const params = useParams();
   const flowchartId = params?.id as string;
+  const { logout } = useAuth();
 
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-50">
@@ -18,14 +21,24 @@ export default function FlowchartPage() {
           </div>
           <h1 className="text-2xl font-bold text-indigo-900">EmailCraft Designer</h1>
         </div>
-        <Link 
-          href="/home" 
-          className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors px-4 py-2 rounded-lg hover:bg-indigo-50 border-2 border-indigo-100"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
-        </Link>
+        <div className="flex gap-4">
+          <Link 
+            href="/home" 
+            className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors px-4 py-2 rounded-lg hover:bg-indigo-50 border-2 border-indigo-100"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Link>
+          <button
+            onClick={logout}
+            className="flex items-center text-red-600 hover:text-red-800 transition-colors px-3 py-2 rounded-lg hover:bg-red-50"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </button>
+        </div>
       </div>
+      
       <FlowchartEditor flowchartId={flowchartId} />
       
       <div className="p-4 text-center text-sm text-indigo-500 mt-auto">
