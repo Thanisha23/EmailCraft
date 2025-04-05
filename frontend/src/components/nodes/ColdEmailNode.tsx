@@ -12,7 +12,7 @@ export default function ColdEmailNode({
   );
 
   useEffect(() => {
-    if (data.to && data.subject && data.body) {
+    if (data.subject && data.body) {
       setStatus("pending");
       const timer = setTimeout(() => {
         setStatus("scheduled");
@@ -22,7 +22,7 @@ export default function ColdEmailNode({
     } else {
       setStatus("none");
     }
-  }, [data.to, data.subject, data.body]);
+  }, [data.subject, data.body]);
 
   return (
     <div className="bg-white border-2 border-indigo-500 rounded-lg p-3 shadow-md w-64">
@@ -65,13 +65,6 @@ export default function ColdEmailNode({
         </div>
 
         <div className="p-2 bg-indigo-50 rounded-md">
-          {data.to && (
-            <div className="text-sm text-indigo-700 mb-1 flex items-start">
-              <span className="font-medium mr-1 min-w-14">To:</span>
-              <span className="truncate">{data.to}</span>
-            </div>
-          )}
-
           {data.subject && (
             <div className="text-sm text-indigo-700 mb-1 flex items-start">
               <span className="font-medium mr-1 min-w-14">Subject:</span>

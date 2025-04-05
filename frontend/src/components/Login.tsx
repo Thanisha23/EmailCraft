@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { login } from '@/service/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, AlertCircle, Loader } from 'lucide-react';
+import { Mail, Lock, AlertCircle, Loader, EyeOff, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Login() {
@@ -12,7 +12,10 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,12 +95,21 @@ export default function Login() {
                 <input
                   className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/50 text-indigo-900"
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="********"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <button 
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 hover:text-indigo-600 focus:outline-none"
+                  onClick={togglePasswordVisibility}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
             </div>
             

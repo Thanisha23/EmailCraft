@@ -45,7 +45,6 @@ export default function NodeConfigPanel({
   >(node.data as ColdEmailNodeData | WaitDelayNodeData | LeadSourceNodeData);
 
   useEffect(() => {
-   
     switch (node.type) {
       case "coldEmail":
         setLocalNodeData(node.data as ColdEmailNodeData);
@@ -55,6 +54,12 @@ export default function NodeConfigPanel({
         break;
       case "leadSource":
         setLocalNodeData(node.data as LeadSourceNodeData);
+        if (
+          (node.data as LeadSourceNodeData).emailList &&
+          Array.isArray((node.data as LeadSourceNodeData).emailList)
+        ) {
+          setEmailInputRaw((node.data as LeadSourceNodeData).emailList.join(", "));
+        }
         break;
       default:
         console.error("Unknown node type:", node.type);
@@ -168,19 +173,16 @@ export default function NodeConfigPanel({
     if (node.type === "coldEmail") {
       const data = node.data as ColdEmailNodeData;
 
-      if (data.to && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.to)) {
-        toast.warning("Invalid email address format");
-        return;
-      }
+     
 
-      if (data.to && data.subject && data.body) {
+      if (data.subject && data.body) {
         setIsSubmitting(true);
         try {
           const date = new Date();
           date.setHours(date.getHours() + 1);
 
           await scheduleEmail({
-            to: data.to,
+            to: "test@example.com",
             subject: data.subject,
             body: data.body || "",
             date: date.toISOString(),
@@ -311,34 +313,7 @@ export default function NodeConfigPanel({
           <div className="space-y-4">
             {node.type === "coldEmail" && (
               <>
-                <div>
-                  <label
-                    className="block text-indigo-900 text-sm font-medium mb-2"
-                    htmlFor="to"
-                  >
-                    Test Recipient Email
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-4 w-4 text-indigo-400" />
-                    </div>
-                    <input
-                      ref={toInputRef as React.RefObject<HTMLInputElement>}
-                      type="email"
-                      id="to"
-                      name="to"
-                      value={(localNodeData as ColdEmailNodeData).to || ""}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-3 py-3 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/30 text-indigo-900"
-                      placeholder="For testing: recipient@example.com"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
-                  <p className="mt-1 text-xs text-indigo-400">
-                    This email is only used for testing. Recipients will come
-                    from Lead Source nodes.
-                  </p>
-                </div>
+             
 
                 <div>
                   <label
@@ -455,7 +430,6 @@ export default function NodeConfigPanel({
                   </div>
                 </div>
 
-                {/* Visual representation of delay time */}
                 <div className="mt-4 p-3 bg-indigo-50 rounded-lg">
                   <div className="text-sm text-indigo-700 font-medium mb-2">
                     Total Delay:

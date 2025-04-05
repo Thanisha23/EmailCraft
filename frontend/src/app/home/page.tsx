@@ -4,22 +4,13 @@ import React, { useState, useEffect } from "react";
 import { getFlowcharts } from "@/service/api";
 import Link from "next/link";
 import { FlowchartData } from "@/types/flowchart";
-import { useAuth } from "@/context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
-import {
-  LogOut,
-  PlusCircle,
-  Loader,
-  BarChart3,
-  Calendar,
-  Grid3X3,
-} from "lucide-react";
+import { PlusCircle, Loader, BarChart3, Calendar, Grid3X3 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Home() {
   const [flowcharts, setFlowcharts] = useState<FlowchartData[]>([]);
   const [loading, setLoading] = useState(true);
-  const { logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -54,22 +45,6 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center p-6 min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-50">
       <div className="w-full max-w-4xl">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center">
-            <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg mr-3">
-              EC
-            </div>
-            <h1 className="text-2xl font-bold text-indigo-900">EmailCraft</h1>
-          </div>
-          <button
-            onClick={logout}
-            className="flex items-center px-4 py-2 bg-white border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </button>
-        </div>
-
         <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-indigo-100 mb-8">
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
@@ -77,11 +52,13 @@ export default function Home() {
                 Your Email Flowcharts
               </h2>
               <button
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm"
+                className="flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 shadow-sm"
                 onClick={handleCreateNew}
               >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Create New Flowchart
+                <PlusCircle className="h-5 w-5" />
+                <span className="hidden sm:inline ml-2">
+                  Create New Flowchart
+                </span>
               </button>
             </div>
 
@@ -146,10 +123,6 @@ export default function Home() {
               </div>
             )}
           </div>
-        </div>
-
-        <div className="text-center text-sm text-indigo-500">
-          &copy; {new Date().getFullYear()} EmailCraft. All rights reserved.
         </div>
       </div>
     </main>

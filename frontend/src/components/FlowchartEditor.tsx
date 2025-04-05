@@ -232,88 +232,109 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
 
     setSelectedNode(null);
 
-    const notification = document.createElement("div");
-    notification.className =
-      "fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg transition-all duration-500 transform translate-y-0 opacity-100";
-    notification.textContent = "Node deleted";
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.style.opacity = "0";
-      notification.style.transform = "translateY(-20px)";
-      setTimeout(() => document.body.removeChild(notification), 500);
-    }, 3000);
+    toast.error("Node deleted", {
+      position: "top-right",
+      duration: 3000,
+    });
   }, []);
 
-  const handleSaveFlowchart = async () => {
-    setIsSaving(true);
-    try {
-      const flowchartData: FlowchartData = {
-        name: flowchartName,
-        nodes,
-        edges,
-      };
 
-      let savedFlowchartId = flowchartId;
+const handleSaveFlowchart = async () => {
+  setIsSaving(true);
+  try {
+    const flowchartData: FlowchartData = {
+      name: flowchartName,
+      nodes,
+      edges,
+    };
 
-      if (flowchartId) {
-        await updateFlowchart(flowchartId, flowchartData);
-      } else {
-        const response = await saveFlowchart(flowchartData);
-        if (
-          response &&
-          response.flowchart &&
-          typeof response.flowchart === "object" &&
-          "_id" in response.flowchart &&
-          typeof response.flowchart._id === "string"
-        ) {
-          savedFlowchartId = response.flowchart._id;
-        }
+    let savedFlowchartId = flowchartId;
+
+    if (flowchartId) {
+      await updateFlowchart(flowchartId, flowchartData);
+    } else {
+      const response = await saveFlowchart(flowchartData);
+      if (
+        response &&
+        response.flowchart &&
+        typeof response.flowchart === "object" &&
+        "_id" in response.flowchart &&
+        typeof response.flowchart._id === "string"
+      ) {
+        savedFlowchartId = response.flowchart._id;
       }
-
-      const saveNotification = document.createElement("div");
-      saveNotification.className =
-        "fixed top-4 right-4 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg transition-all duration-500 transform translate-y-0 opacity-100";
-      saveNotification.textContent = "Flowchart saved successfully!";
-      document.body.appendChild(saveNotification);
-
-      setTimeout(() => {
-        saveNotification.style.opacity = "0";
-        saveNotification.style.transform = "translateY(-20px)";
-        setTimeout(() => document.body.removeChild(saveNotification), 500);
-      }, 3000);
-
-      if (savedFlowchartId) {
-        const hasLeadSource = nodes.some(
-          (node) =>
-            node.type === "leadSource" &&
-            (node.data as LeadSourceNodeData).emailList &&
-            Array.isArray((node.data as LeadSourceNodeData).emailList) &&
-            (node.data as LeadSourceNodeData).emailList.length > 0
-        );
-
-        const hasEmailNode = nodes.some((node) => node.type === "coldEmail");
-
-        if (hasLeadSource && hasEmailNode) {
-          try {
-            await processFlowchart(savedFlowchartId);
-
-            toast.success(
-              "Emails have been scheduled based on your flowchart!"
-            );
-          } catch (error) {
-            console.error("Error processing flowchart for emails:", error);
-            toast.error("Failed to process flowchart for emails");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error saving flowchart:", error);
-      toast.error("Failed to save flowchart");
-    } finally {
-      setIsSaving(false);
     }
-  };
+    const hasLeadSource = nodes.some(
+      (node) =>
+        node.type === "leadSource" &&
+        (node.data as LeadSourceNodeData).emailList &&
+        Array.isArray((node.data as LeadSourceNodeData).emailList) &&
+        (node.data as LeadSourceNodeData).emailList.length > 0
+    );
+
+    const hasEmailNode = nodes.some((node) => {
+      if (node.type === "coldEmail") {
+        const data = node.data as ColdEmailNodeData;
+        return Boolean(data.subject && data.body);
+      }
+      return false;
+    });
+
+    const hasValidConnection = edges.some(edge => {
+      const sourceNode = nodes.find(node => node.id === edge.source);
+      const targetNode = nodes.find(node => node.id === edge.target);
+      return (
+        sourceNode?.type === "leadSource" && 
+        targetNode?.type === "coldEmail"
+      ) || (
+        sourceNode?.type === "leadSource" && 
+        targetNode?.type === "delay" && 
+        edges.some(e2 => {
+          const delayTarget = nodes.find(n => n.id === e2.target);
+          return e2.source === edge.target && delayTarget?.type === "coldEmail";
+        })
+      );
+    });
+
+    if (hasLeadSource && hasEmailNode && hasValidConnection) {
+      toast.success("Flowchart saved successfully!");
+      
+      if (savedFlowchartId) {
+        try {
+          await processFlowchart(savedFlowchartId);
+          toast.success("Emails have been scheduled based on your flowchart!");
+        } catch (error) {
+          console.error("Error processing flowchart for emails:", error);
+          toast.error("Failed to process flowchart for emails");
+        }
+      }
+    } else {
+      if (!hasLeadSource && !hasEmailNode) {
+        toast.success("Flowchart saved! Add lead sources and emails to enable automation.");
+      } else if (!hasLeadSource) {
+        toast.success("Flowchart saved! Add a lead source with emails to enable automation.");
+      } else if (!hasEmailNode) {
+        toast.success("Flowchart saved! Add an email node to enable automation.");
+      } else if (!hasValidConnection) {
+        toast.success("Flowchart saved! Connect your lead source to an email to enable automation.");
+      } else {
+        toast.success("Flowchart saved successfully!");
+      }
+      
+     
+      if (!flowchartId && !hasLeadSource && !hasEmailNode) {
+        setTimeout(() => {
+          window.location.href = "/home";
+        }, 1500);
+      }
+    }
+  } catch (error) {
+    console.error("Error saving flowchart:", error);
+    toast.error("Failed to save flowchart");
+  } finally {
+    setIsSaving(false);
+  }
+};
   const toggleSavedFlowcharts = () => {
     setShowSavedFlowcharts(!showSavedFlowcharts);
   };
@@ -333,51 +354,39 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
 
   return (
     <div className="flex flex-col w-full h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-50">
-      {/* Navbar */}
-      <div className="bg-white border-b border-indigo-100 shadow-sm p-4">
-        <div className="flex justify-between items-center max-w-full mx-auto">
-          <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg mr-3">
-              EC
-            </div>
-            <h1 className="text-xl font-bold text-indigo-900">
-              EmailCraft Designer
-            </h1>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="flex-1 p-4 flex flex-col">
-        <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-          <div className="flex items-center">
-            <div className="relative w-64 mr-4">
+        <div className="bg-white rounded-xl shadow-sm border border-indigo-100 p-4 mb-6">
+          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+            {/* Left side */}
+            <div className="w-full md:w-auto md:flex-shrink-0 md:mr-4">
               <input
                 type="text"
                 value={flowchartName}
                 onChange={(e) => setFlowchartName(e.target.value)}
-                className="w-full pl-3 pr-10 py-2 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/50 text-indigo-900"
+                className="w-full pl-3 pr-3 py-2 border-2 border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-indigo-50/50 text-indigo-900"
                 placeholder="Flowchart Name"
               />
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-nowrap pb-2 md:pb-0 -mx-1 md:mx-0 overflow-x-hidden
+">
               {["Cold Email", "Wait/Delay", "Lead Source"].map((type) => (
                 <button
                   key={type}
-                  className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+                  className="flex-shrink-0 flex items-center px-3 py-2 mx-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 text-sm whitespace-nowrap"
                   onClick={() => addNode(type)}
                 >
                   {getNodeTypeIcon(type)}
-                  Add {type}
+                  <span>{type}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex space-x-2 md:flex-shrink-0 pt-2">
             <button
-              className="flex items-center px-4 py-2 border-2 border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+              className="flex items-center px-3 py-2 border-2 border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 whitespace-nowrap"
               onClick={toggleSavedFlowcharts}
             >
               {showSavedFlowcharts ? (
@@ -385,11 +394,11 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
               ) : (
                 <Eye className="h-4 w-4 mr-2" />
               )}
-              {showSavedFlowcharts ? "Hide Flowcharts" : "Show Flowcharts"}
+              {showSavedFlowcharts ? "Hide" : "Show"} Flowcharts
             </button>
 
             <button
-              className={`flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 ${
+              className={`flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 whitespace-nowrap ${
                 isSaving ? "opacity-70 cursor-not-allowed" : ""
               }`}
               onClick={handleSaveFlowchart}
@@ -403,7 +412,7 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Save Flowchart
+                  Save
                 </>
               )}
             </button>
@@ -504,10 +513,6 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
             </div>
           </div>
         )}
-      </div>
-
-      <div className="bg-white border-t border-indigo-100 p-3 text-center text-sm text-indigo-500">
-        &copy; {new Date().getFullYear()} EmailCraft. All rights reserved.
       </div>
     </div>
   );
