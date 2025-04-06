@@ -83,7 +83,6 @@ export const login = async (req: Request, res: Response) => {
       .json({
         message: "Logged in successfully",
       });
-    ReadableStreamDefaultController;
   } catch (error) {
     res.status(500).json({
       message: "Internal server error",
@@ -93,7 +92,13 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie("token").json({
+  res.clearCookie("token",{
+    httpOnly:true,
+    domain: ".thanisha.tech",
+    sameSite: "lax",
+    path: "/",
+    secure: true
+  }).json({
     message: "Logged out successfully!",
   });
   return;
