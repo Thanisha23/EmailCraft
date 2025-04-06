@@ -312,22 +312,9 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
         nodes,
         edges,
       };
-
-      let savedFlowchartId = flowchartId;
-      const hasLeadSource = nodes.some(
-        (node) =>
-          node.type === "leadSource" &&
-          (node.data as LeadSourceNodeData).emailList &&
-          Array.isArray((node.data as LeadSourceNodeData).emailList) &&
-          (node.data as LeadSourceNodeData).emailList.length > 0
-      );
-      const hasEmailNode = nodes.some((node) => {
-        if (node.type === "coldEmail") {
-          const data = node.data as ColdEmailNodeData;
-          return Boolean(data.subject && data.body);
-        }
-        return false;
-      });
+  
+      let newFlowchartId = flowchartId;
+      
       if (flowchartId) {
         await updateFlowchart(flowchartId, flowchartData);
       } else {
@@ -339,13 +326,20 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
           "_id" in response.flowchart &&
           typeof response.flowchart._id === "string"
         ) {
-          savedFlowchartId = response.flowchart._id;
-          console.log(savedFlowchartId)
+          newFlowchartId = response.flowchart._id;
+          window.history.replaceState({}, '', `/flowchart/${newFlowchartId}`);
+          
+          toast.success("Flowchart saved successfully! Now you can execute it.");
+          
+          setTimeout(() => {
+            window.location.href = `/flowchart/${newFlowchartId}`;
+          }, 1000);
+          return; 
         }
       }
-
+  
       toast.success("Flowchart saved successfully!");
-
+  
       if (!flowchartId && !hasLeadSource && !hasEmailNode) {
         setTimeout(() => {
           window.location.href = "/home";
@@ -441,28 +435,35 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
               )}
             </button>
 
-            <button
-              className={`flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 whitespace-nowrap ${
-                executing ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
-              }`}
-              onClick={handleExecuteFlowchart}
-              disabled={executing || !flowchartId}
-              title={
-                !flowchartId ? "Save flowchart first" : "Execute flowchart"
-              }
-            >
-              {executing ? (
-                <>
-                  <Loader className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Play className="h-4 w-4 mr-2" />
-                  Execute
-                </>
-              )}
-            </button>
+           
+<button
+  className={`flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 whitespace-nowrap ${
+    executing ? "opacity-70 cursor-not-allowed" : 
+    !flowchartId ? "opacity-70 cursor-not-allowed" : "cursor-pointer"
+  }`}
+  onClick={handleExecuteFlowchart}
+  disabled={executing || !flowchartId}
+  title={
+    !flowchartId ? "Save your flowchart first before executing" : "Execute flowchart and schedule emails"
+  }
+>
+  {executing ? (
+    <>
+      <Loader className="h-4 w-4 mr-2 animate-spin" />
+      Processing...
+    </>
+  ) : !flowchartId ? (
+    <>
+      <Save className="h-4 w-4 mr-2" />
+      Save First
+    </>
+  ) : (
+    <>
+      <Play className="h-4 w-4 mr-2" />
+      Execute
+    </>
+  )}
+</button>
           </div>
         </div>
 
