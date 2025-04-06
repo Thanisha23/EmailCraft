@@ -312,7 +312,20 @@ export default function FlowchartEditor({ flowchartId }: FlowchartEditorProps) {
         nodes,
         edges,
       };
-  
+      const hasLeadSource = nodes.some(
+        (node) =>
+          node.type === "leadSource" &&
+          (node.data as LeadSourceNodeData).emailList &&
+          Array.isArray((node.data as LeadSourceNodeData).emailList) &&
+          (node.data as LeadSourceNodeData).emailList.length > 0
+      );
+      const hasEmailNode = nodes.some((node) => {
+        if (node.type === "coldEmail") {
+          const data = node.data as ColdEmailNodeData;
+          return Boolean(data.subject && data.body);
+        }
+        return false;
+      });
       let newFlowchartId = flowchartId;
       
       if (flowchartId) {
