@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { register } from '@/service/auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, User, AlertCircle, Loader, EyeOff, Eye } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, Loader, EyeOff, Eye, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Register() {
@@ -44,7 +44,18 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-50">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-50 relative">
+     <div className="absolute top-3 left-2 md:top-6 md:left-6">
+        <Link
+          href="/"
+          className="inline-flex items-center px-3 py-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          <span>Back</span>
+        </Link>
+      </div>
+
+    
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-2">

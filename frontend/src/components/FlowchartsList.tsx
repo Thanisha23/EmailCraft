@@ -76,7 +76,7 @@ export default function FlowchartsList({ onSelect }: FlowchartsListProps) {
 
   const handleSelect = (id: string | undefined) => {
     if (id) {
-      router.push(`/home/flowchart/${id}`);
+      router.push(`/flowchart/${id}`);
       onSelect();
     }
   };

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Node } from "reactflow";
-// import { scheduleEmail } from "@/service/api";
 import {
   ColdEmailNodeData,
   WaitDelayNodeData,
@@ -35,7 +34,6 @@ export default function NodeConfigPanel({
   onClose,
   onDelete,
 }: NodeConfigPanelProps) {
-  // const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [emailInputRaw, setEmailInputRaw] = useState<string>("");
   const [localNodeData, setLocalNodeData] = useState<
@@ -167,37 +165,7 @@ export default function NodeConfigPanel({
       emailList: emails.filter((email) => emailRegex.test(email)),
     });
   };
-  // const handleScheduleEmail = async () => {
-  //   if (node.type === "coldEmail") {
-  //     const data = node.data as ColdEmailNodeData;
 
-     
-
-  //     if (data.subject && data.body) {
-  //       setIsSubmitting(true);
-  //       try {
-  //         const date = new Date();
-  //         date.setHours(date.getHours() + 1);
-
-  //         await scheduleEmail({
-  //           to: "test@example.com",
-  //           subject: data.subject,
-  //           body: data.body || "",
-  //           date: date.toISOString(),
-  //         });
-
-  //         toast.success("Email scheduled successfully!");
-  //       } catch (error) {
-  //         console.error("Failed to schedule email:", error);
-  //         toast.error("Failed to schedule email");
-  //       } finally {
-  //         setIsSubmitting(false);
-  //       }
-  //     } else {
-  //       toast.warning("Please fill in all required fields");
-  //     }
-  //   }
-  // };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -351,25 +319,7 @@ export default function NodeConfigPanel({
                   />
                 </div>
 
-                {/* <button
-                  onClick={handleScheduleEmail}
-                  disabled={isSubmitting}
-                  className={`w-full flex justify-center items-center cursor-pointer px-4 py-3 mt-2 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-                    isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Clock className="h-4 w-4 mr-2 animate-spin" />
-                      Scheduling...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-4 w-4 mr-2" />
-                      Test: Schedule This Email
-                    </>
-                  )}
-                </button> */}
+               
               </>
             )}
 

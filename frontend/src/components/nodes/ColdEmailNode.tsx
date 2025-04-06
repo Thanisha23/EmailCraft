@@ -77,7 +77,7 @@ export default function ColdEmailNode({
               <div className="text-xs font-medium text-indigo-700 mb-1">
                 Message:
               </div>
-              <div className="text-xs bg-white p-2 rounded border border-indigo-100 max-h-16 overflow-y-auto">
+              <div className="text-xs bg-white p-2 rounded border border-indigo-100 max-h-16 overflow-y-auto text-indigo-900">
                 {data.body.length > 100
                   ? data.body.substring(0, 100) + "..."
                   : data.body}
