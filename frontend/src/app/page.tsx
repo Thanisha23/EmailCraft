@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence ,Variants} from "framer-motion";
 import { Mail, Send, Zap, Users, ChevronRight, Menu, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -10,25 +10,26 @@ const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { isAuthenticated } = useAuth();
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: "easeOut" }
-  };
 
-  const fadeInLeft:any = {
+   const fadeInLeft: Variants = {
     initial: { opacity: 0, x: -60 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.6, ease: "easeOut", delay: 0.2 }
+    animate: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.6, ease: "easeOut", delay: 0.2 }
+    }
   };
 
-  const fadeInRight = {
+  const fadeInRight: Variants = {
     initial: { opacity: 0, x: 60 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.6, ease: "easeOut", delay: 0.4 }
+    animate: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.6, ease: "easeOut", delay: 0.4 }
+    }
   };
 
-  const staggerContainer = {
+  const staggerContainer: Variants = {
     initial: {},
     animate: {
       transition: {
@@ -37,10 +38,13 @@ const LandingPage = () => {
     }
   };
 
-  const staggerItem = {
+  const staggerItem: Variants = {
     initial: { opacity: 0, y: 30 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: "easeOut" }
+    animate: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
   };
 
   return (
@@ -192,6 +196,7 @@ const LandingPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        
           <motion.div {...fadeInLeft}>
             <motion.h2 
               className="text-3xl sm:text-4xl md:text-5xl font-bold text-indigo-900 leading-tight"
