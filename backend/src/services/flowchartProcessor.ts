@@ -52,6 +52,8 @@ export async function processFlowchart(flowchartId: string) {
         continue;
       }
 
+      //using dfs to find all paths
+      // from the lead source node to the email nodes and process them
       const paths = findAllPaths(sourceNode.id, nodes, edges);
 
       for (const path of paths) {
@@ -67,9 +69,19 @@ export async function processFlowchart(flowchartId: string) {
 }
 
 function findAllPaths(startNodeId: string, nodes: Node[], edges: Edge[]) {
+  // Find all paths from the start node to the email nodes
+  // [
+  //          [leadsourceNode -> delay -> emailnode]
+  //        [leadsourceNode -> emailnode]
+  //        [leadsourceNode -> delay -> delay -> emailnode]
+  // ]..thus array of arrays  -----paths
   const paths: string[][] = [];
+  //to avoid cycles
+  // visited set to keep track of visited nodes
   const visited = new Set<string>();
 
+  // DFS function to explore all paths..its recursion
+  
   function dfs(currentNodeId: string, currentPath: string[]) {
     currentPath.push(currentNodeId);
     visited.add(currentNodeId);

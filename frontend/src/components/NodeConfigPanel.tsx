@@ -191,7 +191,7 @@ export default function NodeConfigPanel({
         );
 
         if (emailColumnIndex === -1) {
-          toast.warning('CSV file must contain an &quot;email&quot; column');
+          toast.warning('CSV file must contain an "email" column');
           return;
         }
 

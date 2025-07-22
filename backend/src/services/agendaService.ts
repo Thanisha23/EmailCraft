@@ -1,6 +1,5 @@
 import Agenda, { Job } from "agenda";
 import { sendEmail } from "./emailService";
-import mongoose from "mongoose";
 
 let agendaInstance: Agenda | null = null;
 

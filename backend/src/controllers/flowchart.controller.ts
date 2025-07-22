@@ -28,12 +28,7 @@ export const createFlowchart = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    interface FlowchartNode {
-      type: string;
-      data?: {
-        emailList?: string | string[];
-      };
-    }
+    
 
     const processedNodes = nodes.map((node: FlowchartNode) => {
       if (node.type === "leadSource" && node.data && node.data.emailList) {

@@ -13,6 +13,7 @@
     "@reactflow/controls": "^11.2.14",
     "@reactflow/core": "^11.11.4",
     "@reactflow/minimap": "^11.7.14",
+    "framer-motion": "^12.23.6",
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
     "react": "^19.0.0",
