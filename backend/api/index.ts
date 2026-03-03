@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://emailcraft.thanisha.tech", "http://localhost:3000"],
+    origin: ["https://emailcraft.thanisha.me", "http://localhost:3000"],
     credentials: true,
   })
 );

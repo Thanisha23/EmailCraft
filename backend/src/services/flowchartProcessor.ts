@@ -31,6 +31,7 @@ interface Edge {
 export async function processFlowchart(flowchartId: string) {
   try {
     const flowchart = await Flowchart.findById(flowchartId);
+    
     if (!flowchart) {
       throw new Error("Flowchart not found");
     }

@@ -45,7 +45,9 @@ export const processFlowchartController = async (
       return;
     }
 
-    const result = await processFlowchart(flowchartId);
+     const id = Array.isArray(flowchartId) ? flowchartId[0] : flowchartId;
+
+    const result = await processFlowchart(id);
 
     if (result.success) {
       res.status(200).json({

@@ -75,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        domain: ".thanisha.tech",
+        domain: ".thanisha.me",
         sameSite: "lax",
         path: "/",
         secure: true,
@@ -94,7 +94,7 @@ export const login = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   res.clearCookie("token",{
     httpOnly:true,
-    domain: ".thanisha.tech",
+    domain: ".thanisha.me",
     sameSite: "lax",
     path: "/",
     secure: true
