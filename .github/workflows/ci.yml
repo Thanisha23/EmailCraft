@@ -42,4 +42,4 @@ jobs:
 
       - name: Build backend (if script exists)
         working-directory: backend
-        run: pnpm run build --if-present
+        run: pnpm run --if-present build
